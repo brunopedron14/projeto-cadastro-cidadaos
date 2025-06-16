@@ -30,6 +30,10 @@ public class Cidadao {
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataUltimaAlteracao;
 
+    // O atributo "mappedBy" indica que o dono do relacionamento é o atributo "cidadao" dentro da classe Endereco.
+    // "cascade = CascadeType.ALL" faz com que operações como persistir ou remover um cidadão afetem seus endereços também.
+    // "orphanRemoval = true" faz com que, ao remover um endereço da lista, ele também seja removido do banco automaticamente.
+
     @OneToMany(mappedBy = "cidadao", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Endereco> enderecos = new ArrayList<>();
 
@@ -41,14 +45,19 @@ public class Cidadao {
     )
     private List<ServicoPublico> servicos = new ArrayList<>();
 
+    // Método de utilidade para adicionar um endereço à lista de endereços do cidadão.
+    // Além de adicionar o endereço na lista, ele também define o cidadão dono do endereço.
+
     public void adicionarEndereco(Endereco endereco) {
         enderecos.add(endereco);
-        endereco.setCidadao(this);
+        endereco.setCidadao(this); // Garante que o relacionamento fique sincronizado dos dois lados.
     }
 
+    // Método de utilidade para adicionar um serviço público à lista de serviços do cidadão.
+    // Também adiciona este cidadão à lista de cidadãos do serviço público, garantindo consistência bidirecional.
     public void adicionarServicos(ServicoPublico servicoPublico) {
         servicos.add(servicoPublico);
-        servicoPublico.adicionarCidadao(this);
+        servicoPublico.adicionarCidadao(this); // Atualiza o outro lado da relação (dentro de ServicoPublico).
     }
 
     public Cidadao() {

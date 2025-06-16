@@ -31,7 +31,7 @@ public class CidadaoStorage {
         this.em.remove(cidadao);
         em.getTransaction().commit();
     }
-
+    // Consulta por ID do cidadão
     public Cidadao buscarPorId(Long id){
         return em.find(Cidadao.class, id);
     }
@@ -40,19 +40,19 @@ public class CidadaoStorage {
         String jpql = "SELECT c FROM Cidadao c";
         return em.createQuery(jpql, Cidadao.class).getResultList();
     }
-
+    // Consulta cidadãos pelo nome
     public List<Cidadao> buscarPorNome(String nome){
         String jpql = "SELECT c FROM Cidadao c WHERE c.nome = :nome";
         return em.createQuery(jpql, Cidadao.class).setParameter("nome", nome).getResultList();
     }
-
+    // Busca cidadão com seus endereços
     public Cidadao buscarEnderecosPorId(Long id) {
         return em.createQuery(
                         "SELECT c FROM Cidadao c LEFT JOIN FETCH c.enderecos WHERE c.id = :id", Cidadao.class)
                 .setParameter("id", id)
                 .getSingleResult();
     }
-
+    // Busca cidadão com seus endereços e serviços
     public Cidadao buscarEnderecoServicoPorId(Long id) {
         Cidadao cidadao = em.createQuery(
                         "SELECT c FROM Cidadao c LEFT JOIN FETCH c.enderecos WHERE c.id = :id",

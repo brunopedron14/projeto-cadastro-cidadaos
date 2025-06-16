@@ -29,7 +29,7 @@ public class ServicoPublicoStorage {
         this.em.remove(servicoPublico);
         em.getTransaction().commit();
     }
-
+    // Lista serviços ativos
     public List<ServicoPublico> listarServicosAtivos() {
         return em.createQuery("SELECT s FROM ServicoPublico s WHERE s.ativo = true", ServicoPublico.class)
                 .getResultList();

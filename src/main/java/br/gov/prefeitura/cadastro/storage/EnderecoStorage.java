@@ -28,7 +28,7 @@ public class EnderecoStorage {
         this.em.remove(endereco);
         em.getTransaction().commit();
     }
-
+    // Lista todos os endereços cadastrados
     public List<Endereco> listarTodos(){
         return em.createQuery("SELECT e FROM Endereco e", Endereco.class).getResultList();
     }

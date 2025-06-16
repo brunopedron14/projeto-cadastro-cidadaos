@@ -28,6 +28,8 @@ public class ServicoPublico {
     private Date dataInicio;
     private Date dataFim;
 
+    // "mappedBy = 'servicos'" indica que a tabela intermediária (a ponte entre cidadão e serviço) está definida do lado da classe Cidadao.
+    // Essa anotação diz que esta é a parte **inverse** do relacionamento (não é a dona da relação).
     @ManyToMany(mappedBy = "servicos")
     private List<Cidadao> cidadao = new ArrayList<>();
 
@@ -44,6 +46,8 @@ public class ServicoPublico {
         return cidadao;
     }
 
+    // Método utilitário que adiciona um cidadão à lista de cidadãos deste serviço.
+    // Esse método é chamado do lado do cidadão para manter a consistência da relação.
     public void adicionarCidadao(Cidadao cidadao) {
         this.cidadao.add(cidadao);
     }
