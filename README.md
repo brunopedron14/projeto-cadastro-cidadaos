@@ -57,7 +57,8 @@
 - Aqui eu crio o EntityManager e os 3 Storage que são criados para se comunicar com o banco de dados.
 ![image](https://github.com/user-attachments/assets/0d533717-0446-4264-a9d9-535d73a8b2bb)
 
-- Nessa parte é onde acontece a comunicação com o banco de dados, onde posso cadastrar, deletar e atualizar os dados. 
+- Nessa parte é onde acontece a comunicação com o banco de dados, onde posso cadastrar, deletar e atualizar os dados.
+- 
 ![image](https://github.com/user-attachments/assets/5b13113b-ff68-4fb0-9723-6cc6fe3e5e2d)
 
 ## Consultas
