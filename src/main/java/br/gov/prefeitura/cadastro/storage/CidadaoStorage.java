@@ -46,7 +46,7 @@ public class CidadaoStorage {
         return em.createQuery(jpql, Cidadao.class).setParameter("nome", nome).getResultList();
     }
 
-    public Cidadao buscarComEnderecosPorId(Long id) {
+    public Cidadao buscarEnderecosPorId(Long id) {
         return em.createQuery(
                         "SELECT c FROM Cidadao c LEFT JOIN FETCH c.enderecos WHERE c.id = :id", Cidadao.class)
                 .setParameter("id", id)

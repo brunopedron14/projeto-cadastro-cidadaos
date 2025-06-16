@@ -5,10 +5,12 @@ import br.gov.prefeitura.cadastro.entidades.Endereco;
 import br.gov.prefeitura.cadastro.entidades.ServicoPublico;
 import br.gov.prefeitura.cadastro.service.Categoria;
 import br.gov.prefeitura.cadastro.storage.CidadaoStorage;
+import br.gov.prefeitura.cadastro.storage.EnderecoStorage;
 import br.gov.prefeitura.cadastro.storage.ServicoPublicoStorage;
 import br.gov.prefeitura.cadastro.util.JPAUtil;
 
 import javax.persistence.EntityManager;
+import java.sql.SQLOutput;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -19,48 +21,89 @@ public class Main {
 
         EntityManager em = JPAUtil.getEntityManager();
         CidadaoStorage cidadaoStorage = new CidadaoStorage(em);
+        EnderecoStorage enderecoStorage = new EnderecoStorage(em);
+        ServicoPublicoStorage servicoStorage = new ServicoPublicoStorage(em);
 
+        System.out.println("******** CONSULTA 1 ********");
         Cidadao c = cidadaoStorage.buscarPorId(1L);
         System.out.println(c.getCpf());
+        System.out.println("-------------------------");
 
         List<Cidadao> todos = cidadaoStorage.buscarPorNome("Bruno");
+        System.out.println("******** CONSULTA 2 ********");
         todos.forEach(c2 -> System.out.println(c2.getCpf()));
+        System.out.println("-------------------------");
 
-        Cidadao cidadaoComEndereco = cidadaoStorage.buscarComEnderecosPorId(1L);
-        System.out.println("CPF: " + cidadaoComEndereco.getCpf());
+        List<Endereco> todosEndereco = enderecoStorage.listarTodos();
+        System.out.println("******** CONSULTA 3 ********");
+        for (Endereco e : todosEndereco) {
+            System.out.println("Endereço:");
+            System.out.println("Logradouro: " + e.getLogradouro());
+            System.out.println("Bairro: " + e.getBairro());
+            System.out.println("Cidade: " + e.getCidade());
+            System.out.println("CEP: " + e.getCep());
+            System.out.println("Estado: " + e.getEstado());
+            System.out.println("-------------------------");
+        }
 
-        cidadaoComEndereco.getEnderecos().forEach(e ->
-                System.out.println("Endereço: " + e.getLogradouro() + ", " + e.getCidade())
-        );
+        List<ServicoPublico> servicosAtivos = servicoStorage.listarServicosAtivos();
+        System.out.println("******** CONSULTA 4 ********");
+        for (ServicoPublico s : servicosAtivos) {
+            System.out.println("Serviço: " + s.getNome());
+            System.out.println("Categoria: " + s.getCategoria());
+            System.out.println("Data de Início: " + s.getDataInicio());
+            System.out.println("-------------------------");
+        }
+
+        Cidadao buscarEnderecosPorId = cidadaoStorage.buscarEnderecosPorId(1L);
+        System.out.println("******** CONSULTA 5 ********");
+        System.out.println("Nome: " + buscarEnderecosPorId.getNome());
+        System.out.println("CPF: " + buscarEnderecosPorId.getCpf());
+
+        buscarEnderecosPorId.getEnderecos().forEach(e -> {
+            System.out.println("Endereço: " + e.getLogradouro() + ", " + e.getBairro() + ", " + e.getCidade());
+            System.out.println("-------------------------");
+        });
 
         Cidadao cidadaoEnderecoServico = cidadaoStorage.buscarEnderecoServicoPorId(1L);
+        System.out.println("******** CONSULTA 6 ********");
         System.out.println("Nome: " + cidadaoEnderecoServico.getNome());
         System.out.println("CPF: " + cidadaoEnderecoServico.getCpf());
 
-        cidadaoEnderecoServico.getEnderecos().forEach(e -> System.out.println("Endereço: " + e.getLogradouro() + ", " + e.getBairro() + ", " + e.getCidade() + ", " + e.getCep() + ", " + e.getEstado()));
+        cidadaoEnderecoServico.getEnderecos().forEach(e -> System.out.println("Endereço: " + e.getLogradouro() +
+                ", " + e.getBairro() + ", " + e.getCidade() + ", " + e.getCep() + ", " + e.getEstado()));
         cidadaoEnderecoServico.getServicos().forEach(s -> System.out.println("Serviços: " + s.getNome() + " (" + s.getCategoria() + ") " + s.getDataInicio()));
+        System.out.println("-------------------------");
         em.close();
     }
 
     private static void cadastro() {
         try {
             Endereco endereco1 = new Endereco("Rua Edith Gaertner", "Vila Nova", "01010010", "Blumenau", "SC");
+            Endereco endereco2 = new Endereco("Rua XV de novembro", "Centro", "20202020", "Blumenau", "SC");
             Cidadao cidadao1 = new Cidadao("Bruno", "10110110100");
+            Cidadao cidadao2 = new Cidadao("Pedro", "12312312312");
             Date dataInicio = new SimpleDateFormat("ddMMyyyy").parse("02062025");
             Date dataInicio2 = new SimpleDateFormat("ddMMyyyy").parse("09062025");
             ServicoPublico servico1 = new ServicoPublico("Hospitais", Categoria.SAUDE, dataInicio);
             ServicoPublico servico2 = new ServicoPublico("Educação Básica", Categoria.EDUCACAO, dataInicio2);
             cidadao1.adicionarEndereco(endereco1);
+            cidadao1.adicionarEndereco(endereco2);
             cidadao1.adicionarServicos(servico1);
             cidadao1.adicionarServicos(servico2);
 
             EntityManager em = JPAUtil.getEntityManager();
             CidadaoStorage storageCidadao = new CidadaoStorage(em);
             ServicoPublicoStorage storageServico = new ServicoPublicoStorage(em);
+            EnderecoStorage storageEndereco = new EnderecoStorage(em);
 
             storageServico.cadastrar(servico1);
             storageServico.cadastrar(servico2);
             storageCidadao.cadastrar(cidadao1);
+            storageCidadao.cadastrar(cidadao2);
+            storageEndereco.cadastrar(endereco2);
+
+            storageCidadao.deletar(cidadao2);
 
             cidadao1.setCpf("99999999999");
             storageCidadao.atualizar(cidadao1);

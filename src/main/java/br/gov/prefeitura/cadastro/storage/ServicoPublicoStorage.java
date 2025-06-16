@@ -1,9 +1,9 @@
 package br.gov.prefeitura.cadastro.storage;
 
-import br.gov.prefeitura.cadastro.entidades.Cidadao;
 import br.gov.prefeitura.cadastro.entidades.ServicoPublico;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 
 public class ServicoPublicoStorage {
     private EntityManager em;
@@ -18,8 +18,8 @@ public class ServicoPublicoStorage {
         em.getTransaction().commit();
     }
 
-    public void atualizar(Cidadao cidadao){
-        this.em.merge(cidadao);
+    public void atualizar(ServicoPublico servicoPublico){
+        this.em.merge(servicoPublico);
 
     }
 
@@ -28,5 +28,10 @@ public class ServicoPublicoStorage {
         this.em.merge(servicoPublico);
         this.em.remove(servicoPublico);
         em.getTransaction().commit();
+    }
+
+    public List<ServicoPublico> listarServicosAtivos() {
+        return em.createQuery("SELECT s FROM ServicoPublico s WHERE s.ativo = true", ServicoPublico.class)
+                .getResultList();
     }
 }

@@ -3,6 +3,7 @@ package br.gov.prefeitura.cadastro.storage;
 import br.gov.prefeitura.cadastro.entidades.Endereco;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 
 public class EnderecoStorage {
     private EntityManager em;
@@ -28,5 +29,8 @@ public class EnderecoStorage {
         em.getTransaction().commit();
     }
 
+    public List<Endereco> listarTodos(){
+        return em.createQuery("SELECT e FROM Endereco e", Endereco.class).getResultList();
+    }
 
 }
